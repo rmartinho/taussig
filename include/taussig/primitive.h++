@@ -23,53 +23,48 @@
 #include <cassert>
 
 namespace seq {
+    //! {concept}
+    //! A source of values for a sequence.
+    // concept SequenceSource<S> {
+        //! {function}
+        //! *Returns*: a [concept:Sequence] with elements from `s`.
+        // nonmember Sequence<Seq> as_sequence(SequenceSource<S> const& s);
+    // };
+
+    //! {concept}
+    //! A sequence with a smart interface based on Andrei Alexandrescu's ideas.
+    // concept Sequence<S> requires Copyable<S> {
+        //! {trait}
+        //! The type of values in this sequence.
+        // nonmember typename seq::Value<Sequence<S>>;
+
+        //! {trait}
+        //! The type of references to this sequence.
+        //! *Note*: this type may not be a reference if the sequence is not persistent.
+        // nonmember typename seq::Reference<Sequence<S>>;
+
+        //! {function}
+        //! *Returns*: `true` if the sequence `s` has no elements.
+        // nonmember bool seq::empty(Sequence<S> const& s);
+
+        //! {function}
+        //! *Requires*: `!empty()`.
+        //! *Returns*: the first element of the sequence `s`.
+        // nonmember reference seq::front(Sequence<S> const &);
+
+        //! {function}
+        //! *Requires*: `!empty()`.
+        //! *Effects*: skips the first element in the sequence `s`.
+        // nonmember void seq::pop_front(Sequence<S>& s);
+    // };
+
+    //! {tag}
+    //! *Effects*: marks a derived type as a [concept:Sequence] with native operations.
+    template <typename... Props>
+    struct native_sequence {
+        struct is_native_sequence : std::true_type {};
+    };
     namespace detail {
-        //! {concept}
-        //! A source of values for a sequence.
-        // concept SequenceSource<S> {
-            //! {function}
-            //! *Returns*: a [concept:Sequence] with elements from `s`.
-            // nonmember Sequence<Seq> as_sequence(SequenceSource<S> const& s);
-        // };
-
-        //! {concept}
-        //! A sequence with a smart interface based on Andrei Alexandrescu's ideas.
-        // concept Sequence<S> requires Copyable<S> {
-            //! {trait}
-            //! The type of values in this sequence.
-            // nonmember typename seq::Value<Sequence<S>>;
-
-            //! {trait}
-            //! The type of references to this sequence.
-            //! *Note*: this type may not be a reference if the sequence is not persistent.
-            // nonmember typename seq::Reference<Sequence<S>>;
-
-            //! {function}
-            //! *Returns*: `true` if the sequence `s` has no elements.
-            // nonmember bool seq::empty(Sequence<S> const& s);
-
-            //! {function}
-            //! *Requires*: `!empty()`.
-            //! *Returns*: the first element of the sequence `s`.
-            // nonmember reference seq::front(Sequence<S> const &);
-
-            //! {function}
-            //! *Requires*: `!empty()`.
-            //! *Effects*: skips the first element in the sequence `s`.
-            // nonmember void seq::pop_front(Sequence<S>& s);
-
-            //! {function}
-            //! *Returns*: a sequence in the current state of the sequence `s`.
-            // nonmemberSequence<S> seq::save(Sequence<S> const& s);
-        // };
-
-        //! {tag}
-        //! *Effects*: marks a derived type as a [concept:Sequence] with native operations.
-        template <typename... Props>
-        struct native_sequence {
-            struct is_native_sequence : std::true_type {};
-        };
-
         struct native_sequence_test {
             template <typename T>
             wheels::All<
@@ -77,18 +72,20 @@ namespace seq {
                 std::is_convertible<decltype(std::declval<T>().empty()), bool>,
                 std::is_convertible<decltype(std::declval<T>().front()), typename T::reference>,
                 std::is_void<decltype(std::declval<T>().pop_front())>,
-                std::is_same<decltype(std::declval<T>().save()), T>,
                 std::is_same<decltype(std::declval<T>().before(std::declval<T>())), T>
             > static test(int);
             template <typename...>
             std::false_type static test(...);
         };
-        //! {trait}
-        //! *Returns*: `true` if `S` is a [concept:Sequence] with native operations;
-        //             `false` otherwise.
-        template <typename T>
-        using is_native_sequence = wheels::TraitOf<detail::native_sequence_test, T>;
+    } // namespace detail
 
+    //! {trait}
+    //! *Returns*: `true` if `S` is a [concept:Sequence] with native operations;
+    //             `false` otherwise.
+    template <typename T>
+    using is_native_sequence = wheels::TraitOf<detail::native_sequence_test, T>;
+
+    namespace detail {
         //! {traits}
         //! *Note*: implementation backend for [traits:sequence_ops].
         template <typename S,
@@ -98,7 +95,7 @@ namespace seq {
         //! {specialization:1}
         template <typename S>
         struct sequence_ops_impl<S, true> {
-            //! The type of values in the sequence `S`.jjjjjjjjj
+            //! The type of values in the sequence `S`.
             using value_type = typename S::value_type;
             //! {trait}
             //! The type of references to the sequence `S`.
@@ -117,9 +114,6 @@ namespace seq {
             //! *Effects*: skips the first element in the sequence `s`.
             static void pop_front(S& s) { s.pop_front(); }
             //! {function}
-            //! *Returns*: a sequence in the current state of `s`.
-            static S save(S const& s) { return s.save(); }
-            //! {function}
             static S before(S const& whole, S const& part) { return whole.before(part); }
         };
 
@@ -135,7 +129,6 @@ namespace seq {
             static bool empty(sequence_type const& its) { return its.first == its.second; }
             static reference front(sequence_type const& its) { return *its.first; }
             static void pop_front(sequence_type& its) { ++its.first; }
-            static sequence_type save(sequence_type const& its) { return its; }
             static sequence_type before(sequence_type const& whole, sequence_type const& part) { return { whole.first, part.first }; }
         };
 
@@ -219,13 +212,6 @@ namespace seq {
         assert(!seq::empty(s));
         return detail::sequence_ops<S>::pop_front(s);
     }
-
-    //! {function}
-    //! *Requires*: `S` is a [concept:Sequence] [soft].
-    //! *Returns*: a sequence in the current state of `s`.
-    template <typename S,
-                wheels::EnableIf<is_sequence<S>>...>
-    S save(S const& s) { return detail::sequence_ops<S>::save(s); }
 
     //! {function}
     //! *Requires*: `S` is a [concept:Sequence] [soft].

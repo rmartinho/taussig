@@ -123,4 +123,4 @@ namespace seq {
     }
 } // namespace seq
 
-#endif // TAUSSIG_FORWARD_SEQUENCE_HPP
+#endif // TAUSSIG_AS_SEQUENCE_HPP
