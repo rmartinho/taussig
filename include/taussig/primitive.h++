@@ -60,7 +60,6 @@ namespace seq {
 
     //! {tag}
     //! *Effects*: marks a derived type as a [concept:Sequence] with native operations.
-    template <typename... Props>
     struct native_sequence {
         struct is_native_sequence : std::true_type {};
     };
