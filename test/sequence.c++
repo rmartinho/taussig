@@ -40,3 +40,33 @@ TEST_CASE("sequence_iterator", "sequence iterator tests") {
         ++i;
     }
 }
+
+struct foo {
+    std::vector<int> x;
+};
+
+namespace seq {
+    template <>
+    struct sequence_source< ::foo> {
+        using result = result_of::as_sequence<std::vector<int>>;
+        static result forward(foo const& f) { return as_sequence(f.x); }
+    };
+} // namespace seq
+
+TEST_CASE("adapted_source", "adapting a sequence source") {
+    foo f { { 1, 2, 3, 4 } };
+    auto&& ns = seq::as_sequence(f);
+    REQUIRE(!seq::empty(ns));
+    REQUIRE(seq::front(ns) == 1);
+    seq::pop_front(ns);
+    REQUIRE(!seq::empty(ns));
+    REQUIRE(seq::front(ns) == 2);
+    seq::pop_front(ns);
+    REQUIRE(!seq::empty(ns));
+    REQUIRE(seq::front(ns) == 3);
+    seq::pop_front(ns);
+    REQUIRE(!seq::empty(ns));
+    REQUIRE(seq::front(ns) == 4);
+    seq::pop_front(ns);
+    REQUIRE(seq::empty(ns));
+}
