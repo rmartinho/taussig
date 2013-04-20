@@ -43,7 +43,7 @@ namespace seq {
         //!         use sequences operations if you need more flexibility.
         template <typename Sequence>
         struct sequence_iterator {
-            //! *Invariant*: `is_end()` or `seq` contains a non-empty sequence.
+            //! *Invariant*: `is_end()` or `s` contains a non-empty sequence.
 
             static_assert(is_sequence<Sequence>(), "sequence_iterator requires a sequence");
 

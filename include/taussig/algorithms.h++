@@ -9,14 +9,15 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Taussig main header
+// Sequence algorithms
 
-#ifndef TAUSSIG_HPP
-#define TAUSSIG_HPP
+#ifndef TAUSSIG_ALGORITHMS_HPP
+#define TAUSSIG_ALGORITHMS_HPP
 
-#include <taussig/traits.h++>
-#include <taussig/primitives.h++>
-#include <taussig/interop.h++>
-#include <taussig/algorithms.h++>
+#include <taussig/algorithms/shift_front.h++>
 
-#endif // TAUSSIG_HPP
+#include <taussig/algorithms/consume.h++>
+#include <taussig/algorithms/equal.h++>
+
+#endif // TAUSSIG_ALGORITHMS_HPP
+

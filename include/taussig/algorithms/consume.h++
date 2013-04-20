@@ -9,29 +9,28 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Sequence pop_front() primitive
+// Sequence consume() algorithm
 
-#ifndef TAUSSIG_PRIMITIVES_POP_FRONT_HPP
-#define TAUSSIG_PRIMITIVES_POP_FRONT_HPP
+#ifndef TAUSSIG_ALGORITHMS_CONSUME_HPP
+#define TAUSSIG_ALGORITHMS_CONSUME_HPP
 
+#include <taussig/primitives/empty.h++>
+#include <taussig/primitives/pop_front.h++>
 #include <taussig/traits/is_sequence.h++>
-
-#include <taussig/detail/sequence_impl.h++>
 
 #include <wheels/meta.h++> // EnableIf
 
-#include <cassert>
-
 namespace seq {
     //! {function}
-    //! *Requires*: `S` is a sequence [soft]; and `!empty(s)` [undefined].
-    //! *Effects*: skips the first element in the sequence `s`.
+    //! *Requires*: `S` is a sequence [soft].
+    //! *Effects*: skips elements from the sequence `s` until it is empty.
     template <typename S,
               wheels::EnableIf<is_sequence<S>>...>
-    void pop_front(S& s) {
-        assert(!seq::empty(s));
-        detail::sequence_impl<S>::pop_front(s);
+    void consume(S& s) {
+        while(!seq::empty(s)) {
+            seq::pop_front(s);
+        }
     }
 } // namespace seq
 
-#endif // TAUSSIG_PRIMITIVES_POP_FRONT_HPP
+#endif // TAUSSIG_ALGORITHMS_CONSUME_HPP
