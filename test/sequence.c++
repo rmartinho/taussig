@@ -11,9 +11,7 @@
 
 // Tests for <taussig/sequence.h++>
 
-#include <taussig/primitive.h++>
-#include <taussig/as_sequence.h++>
-#include <taussig/interop.h++>
+#include <taussig/taussig.h++>
 
 #include <catch.h++>
 

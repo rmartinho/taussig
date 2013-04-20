@@ -9,12 +9,13 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Interoperation with iterators and containers
+// Taussig main header
 
-#ifndef TAUSSIG_INTEROP_HPP
-#define TAUSSIG_INTEROP_HPP
+#ifndef TAUSSIG_HPP
+#define TAUSSIG_HPP
 
-#include <taussig/interop/begin_end.h++>
-#include <taussig/interop/materialize.h++>
+#include <taussig/traits.h++>
+#include <taussig/primitives.h++>
+#include <taussig/interop.h++>
 
-#endif // TAUSSIG_INTEROP_HPP
+#endif // TAUSSIG_HPP

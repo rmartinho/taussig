@@ -9,12 +9,15 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Interoperation with iterators and containers
+// Primitive sequence operations
 
-#ifndef TAUSSIG_INTEROP_HPP
-#define TAUSSIG_INTEROP_HPP
+#ifndef TAUSSIG_PRIMITIVES_HPP
+#define TAUSSIG_PRIMITIVES_HPP
 
-#include <taussig/interop/begin_end.h++>
-#include <taussig/interop/materialize.h++>
+#include <taussig/primitives/as_sequence.h++>
+#include <taussig/primitives/empty.h++>
+#include <taussig/primitives/front.h++>
+#include <taussig/primitives/pop_front.h++>
+#include <taussig/primitives/before.h++>
 
-#endif // TAUSSIG_INTEROP_HPP
+#endif // TAUSSIG_PRIMITIVES_HPP

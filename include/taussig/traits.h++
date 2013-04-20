@@ -9,22 +9,18 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Trait that tests if a type is already decayed
+// Sequence traits
 
-#ifndef TAUSSIG_DETAIL_IS_DECAYED_HPP
-#define TAUSSIG_DETAIL_IS_DECAYED_HPP
+#ifndef TAUSSIG_TRAITS_HPP
+#define TAUSSIG_TRAITS_HPP
 
-#include <wheels/meta.h++>
+#include <taussig/traits/is_true_sequence.h++>
+#include <taussig/traits/true_sequence.h++>
 
-#include <type_traits>
+#include <taussig/traits/is_sequence.h++>
+#include <taussig/traits/is_sequence_of.h++>
 
-namespace seq {
-    namespace detail {
-        //! {trait}
-        //! *Returns*: `true` if decaying `T` yields `T`.
-        template <typename T>
-        struct is_decayed : std::is_same<wheels::Decay<T>, T> {};
-    } // namespace detail
-} // namespace seq
+#include <taussig/traits/reference_type.h++>
+#include <taussig/traits/value_type.h++>
 
-#endif // TAUSSIG_DETAIL_META_IS_DECAYED_HPP
+#endif // TAUSSIG_TRAITS_HPP

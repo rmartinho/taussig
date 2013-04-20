@@ -11,56 +11,56 @@
 
 // Obtaining sequences
 
-#ifndef TAUSSIG_AS_SEQUENCE_HPP
-#define TAUSSIG_AS_SEQUENCE_HPP
+#ifndef TAUSSIG_PRIMITIVES_AS_SEQUENCE_HPP
+#define TAUSSIG_PRIMITIVES_AS_SEQUENCE_HPP
 
-#include <taussig/primitive.h++>
-#include <taussig/detail/characters.h++>
-#include <taussig/detail/iterators.h++>
+#include <taussig/traits/is_true_sequence.h++>
 
-#include <wheels/meta.h++>
+#include <taussig/detail/iterators.h++> // has_begin_end, is_iterator_pair, ConstIteratorOf
+#include <taussig/detail/characters.h++> // is_null_terminated_string
 
-#include <iterator>
-#include <string>
-#include <type_traits>
-#include <utility>
-#include <cstddef>
+#include <wheels/meta.h++> // Unqualified, identity, Invoke
+
+#include <iterator> // forward_iterator_tag, begin, end
+#include <utility> // forward, pair
+#include <string> // char_traits
+#include <cstddef> // size_t
 
 namespace seq {
     namespace detail {
-        struct native_sequence_tag { using type = native_sequence_tag; };
+        struct true_sequence_tag { using type = true_sequence_tag; };
         struct iterable_tag { using type = iterable_tag; };
         struct iterator_pair_tag { using type = iterator_pair_tag; };
         struct null_terminated_tag { using type = null_terminated_tag; };
+
         template <typename T,
-                  bool = is_native_sequence<wheels::Unqualified<T>>(),
+                  bool = is_true_sequence<wheels::Unqualified<T>>(),
                   bool = has_begin_end<T, std::forward_iterator_tag>(),
                   bool = is_iterator_pair<T>(),
                   bool = is_null_terminated_string<wheels::Unqualified<T>>()>
-        struct source_type_of : wheels::identity<void> {};
+        struct source_kind_of : wheels::identity<void> {};
         template <typename T>
-        using SourceTypeOf = wheels::Invoke<source_type_of<T>>;
+        using SourceKindOf = wheels::Invoke<source_kind_of<T>>;
 
         template <typename T, bool I, bool P, bool Z>
-        struct source_type_of<T, true, I, P, Z> : native_sequence_tag {};
+        struct source_kind_of<T, true, I, P, Z> : true_sequence_tag {};
         template <typename T, bool P>
-        struct source_type_of<T, false, true, P, true> : null_terminated_tag {};
+        struct source_kind_of<T, false, true, P, true> : null_terminated_tag {};
         template <typename T, bool P>
-        struct source_type_of<T, false, true, P, false> : iterable_tag {};
+        struct source_kind_of<T, false, true, P, false> : iterable_tag {};
         template <typename T, bool Z>
-        struct source_type_of<T, false, false, true, Z> : iterator_pair_tag {};
+        struct source_kind_of<T, false, false, true, Z> : iterator_pair_tag {};
         template <typename T>
-        struct source_type_of<T, false, false, false, true> : null_terminated_tag {};
+        struct source_kind_of<T, false, false, false, true> : null_terminated_tag {};
 
         //! {traits}
-        //! *Note*: implementation backend for [function:as_sequence]
-        //          and [metafunction:result_of::as_sequence].
+        //! *Note*: implementation backend for `as_sequence` and `result_of::as_sequence`.
         template <typename T,
-                  typename Type = SourceTypeOf<T>>
+                  typename Type = SourceKindOf<T>>
         struct as_sequence_impl {};
 
         template <typename S>
-        struct as_sequence_impl<S, native_sequence_tag> {
+        struct as_sequence_impl<S, true_sequence_tag> {
             using result = S;
             static result forward(S&& s) { return std::forward<S>(s); }
         };
@@ -71,6 +71,7 @@ namespace seq {
             using iterator = ConstIteratorOf<Iterable>;
         public:
             using result = std::pair<iterator, iterator>;
+            // TODO ADL begin end
             static result forward(Iterable const& r) { return { std::begin(r), std::end(r) }; }
         };
 
@@ -103,9 +104,9 @@ namespace seq {
 
     namespace result_of {
         //! {metafunction}
-        //! *Requires*: `T` is a model of [concept:SequenceSource] [soft].
-        //! *Effects*: computes the result type for [function:seq::as_sequence].
-        //! *Returns*: `T` if `T` is a [concept:Sequence] type or a reference to one;
+        //! *Requires*: `T` is a sequence source [soft]. TODO
+        //! *Effects*: computes the result type for `seq::as_sequence`.
+        //! *Returns*: `T` if `T` is a sequence type or a reference to one;
         //!            `U const(&)[N]` if `T` is a reference to an array of non-character type `U[N]`;
         //!            `Char const*` if `T` is a pointer `Char*` to a possibly `const` character type,
         //!              or if `T` is a reference to an array of character type `Char[N]`.
@@ -114,7 +115,7 @@ namespace seq {
     } // namespace result_of
 
     //! {function}
-    //! *Requires*: `T` is a model of [concept:SequenceSource] [soft];
+    //! *Requires*: `T` is a sequence source [soft]; TODO
     //!             if `T` is a pointer type, `t` is a valid pointer to the first element of a null-terminated string [undefined].
     //! *Effects*: forwards a sequence with the normalized interface, possibly using a wrapper.
     template <typename T>
@@ -123,4 +124,4 @@ namespace seq {
     }
 } // namespace seq
 
-#endif // TAUSSIG_AS_SEQUENCE_HPP
+#endif // TAUSSIG_PRIMITIVES_AS_SEQUENCE_HPP

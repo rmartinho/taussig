@@ -24,10 +24,15 @@
 namespace seq {
     namespace detail {
         //! {metafunction}
-        //! *Requires*: `T` is a model of [concept:Iterator] [soft].
+        //! *Requires*: `T` is an Iterator [soft].
         //! *Returns*: the iterator category of `T`.
         template <typename T>
         using IteratorCategory = typename std::iterator_traits<T>::iterator_category;
+
+        template <typename T>
+        using IteratorValueType = typename std::iterator_traits<T>::value_type;
+        template <typename T>
+        using IteratorReferenceType = typename std::iterator_traits<T>::reference;
 
         struct is_iterator_test {
             template <typename T, typename Cat>
@@ -36,11 +41,12 @@ namespace seq {
             std::false_type static test(...);
         };
         //! {trait}
-        //! *Returns*: `true` if `T` is a model of [concept:Iterator] with category `Cat`;
+        //! *Returns*: `true` if `T` is an Iterator with category `Cat`;
         //             `false` otherwise.
         template <typename T, typename Cat = std::input_iterator_tag>
         struct is_iterator : wheels::TraitOf<is_iterator_test, T, Cat> {};
 
+        // TODO ADL begin end
         namespace result_of {
             template <typename T>
             using begin = decltype(std::begin(std::declval<T>()));
@@ -59,7 +65,7 @@ namespace seq {
         };
         //! {trait}
         //! *Returns*: `true` if `T` has `begin()` and `end()` member functions
-        //             that return the same model of [concept:Iterator] with category `Cat`;
+        //             that return the same type of Iterator with category `Cat`;
         //             `false` otherwise.
         template <typename T, typename Cat = std::input_iterator_tag>
         struct has_begin_end : wheels::TraitOf<has_begin_end_test, T, Cat> {};
@@ -87,6 +93,3 @@ namespace seq {
 } // namespace seq
 
 #endif // TAUSSIG_DETAIL_ITERATOR_HPP
-
-
-

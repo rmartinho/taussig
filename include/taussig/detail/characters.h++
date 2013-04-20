@@ -49,4 +49,3 @@ namespace seq {
 } // namespace seq
 
 #endif // TAUSSIG_DETAIL_CHARACTERS_HPP
-

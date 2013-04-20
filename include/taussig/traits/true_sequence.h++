@@ -9,12 +9,20 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Interoperation with iterators and containers
+// True sequence marker
 
-#ifndef TAUSSIG_INTEROP_HPP
-#define TAUSSIG_INTEROP_HPP
+#ifndef TAUSSIG_TRAITS_TRUE_SEQUENCE_HPP
+#define TAUSSIG_TRAITS_TRUE_SEQUENCE_HPP
 
-#include <taussig/interop/begin_end.h++>
-#include <taussig/interop/materialize.h++>
+#include <type_traits> // true_type
 
-#endif // TAUSSIG_INTEROP_HPP
+namespace seq {
+    //! {tag}
+    //! *Effects*: marks a derived type as a sequence that provides sequence
+    //!            operations directly as member functions.
+    struct true_sequence {
+        using is_true_sequence = std::true_type;
+    };
+} // namespace seq
+
+#endif // TAUSSIG_TRAITS_TRUE_SEQUENCE_HPP
