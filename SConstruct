@@ -21,6 +21,7 @@ def makeTargets(base):
 
 def makeOptions():
     options = Variables()
+    options.Add(EnumVariable('toolchain', 'toolchain to use', 'gcc', allowed_values = ('gcc', 'clang')))
     options.Add(EnumVariable('lib', 'library to build', 'static', allowed_values = ('static', 'shared')))
     options.Add(BoolVariable('fatal', 'stop on first error', True))
     return options
@@ -39,9 +40,11 @@ def makeBaseEnvironment(opts):
     if 'TERM' in os.environ:
         env['ENV']['TERM'] = os.environ['TERM']
 
-    # Set compiler from environment
+    # Set compiler from environment or toolchain option
     if 'CXX' in os.environ:
         env['CXX'] = os.environ['CXX']
+    else:
+        env['CXX'] = 'g++' if env['toolchain'] == 'gcc' else 'clang++'
 
     setWarnings(env)
     setLanguage(env)
@@ -66,6 +69,9 @@ def setWarnings(env):
 def setLanguage(env):
     env.MergeFlags([ '-std=' + config.language ])
     env['LINK'] = env['CXX']
+    if env['toolchain'] == 'clang':
+        env.MergeFlags([ '-stdlib=libc++' ])
+        env.Append(LINKFLAGS = [ '-stdlib=libc++' ])
 
 def setStructure(env):
     env.Append(CPPPATH = ['include'])
@@ -136,9 +142,11 @@ def makeDebug(base, alias):
 
 def makeRelease(base, alias):
     env = cloneLib(base, alias, 'release')
-    env.MergeFlags([ '-O3', '-flto' ])
+    env.MergeFlags([ '-O3' ])
+    if env['toolchain'] == 'gcc':
+        env.MergeFlags([ '-flto' ])
+        env.Append(LINKFLAGS = [ '-flto' ])
     env.Append(CPPDEFINES = [ 'NDEBUG' ])
-    env.Append(LINKFLAGS = [ '-flto' ])
     return env
 
 def makeTest(base, alias):
