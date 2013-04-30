@@ -9,11 +9,9 @@ branches:
 before_install:
     - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
     - sudo add-apt-repository --yes ppa:apokluda/boost1.53
-    - sudo add-apt-repository --yes ppa:georgekola/clang
     - sudo apt-get --yes update
     - sudo apt-get --yes install g++-4.8
     - sudo apt-get --yes install libboost1.53-all-dev
-    - sudo apt-get --yes install clang-3.2 llvm-3.2 libc++
 before_script:
     - export CXX="g++-4.8"
 script: scons fatal=no test
