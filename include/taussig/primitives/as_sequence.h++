@@ -60,16 +60,16 @@ namespace seq {
 
         template <typename T, bool I, bool P, bool Z, bool A>
         struct source_kind_of<T, true, I, P, Z, A> : true_sequence_tag {};
-        template <typename T, bool P, bool A>
-        struct source_kind_of<T, false, true, P, true, A> : null_terminated_tag {};
-        template <typename T, bool P, bool A>
-        struct source_kind_of<T, false, true, P, false, A> : iterable_tag {};
-        template <typename T, bool Z, bool A>
-        struct source_kind_of<T, false, false, true, Z, A> : iterator_pair_tag {};
-        template <typename T, bool A>
-        struct source_kind_of<T, false, false, false, true, A> : null_terminated_tag {};
+        template <typename T, bool I, bool P, bool Z>
+        struct source_kind_of<T, false, I, P, Z, true> : adapted_source_tag {};
+        template <typename T, bool P>
+        struct source_kind_of<T, false, true, P, true, false> : null_terminated_tag {};
+        template <typename T, bool P>
+        struct source_kind_of<T, false, true, P, false, false> : iterable_tag {};
+        template <typename T, bool Z>
+        struct source_kind_of<T, false, false, true, Z, false> : iterator_pair_tag {};
         template <typename T>
-        struct source_kind_of<T, false, false, false, false, true> : adapted_source_tag {};
+        struct source_kind_of<T, false, false, false, true, false> : null_terminated_tag {};
 
         //! {traits}
         //! *Note*: implementation backend for `as_sequence` and `result_of::as_sequence`.
