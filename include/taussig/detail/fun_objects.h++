@@ -14,7 +14,7 @@
 #ifndef TAUSSIG_DETAIL_FUN_OBJECTS_HPP
 #define TAUSSIG_DETAIL_FUN_OBJECTS_HPP
 
-#include <wheels/meta.h++> // TraitOf
+#include <wheels/meta/trait_of.h++>
 
 #include <type_traits> // is_convertible, false_type
 #include <utility> // forward, declval
@@ -35,7 +35,7 @@ namespace seq {
             std::false_type static test(...);
         };
         template <typename T, typename... Args>
-        struct is_predicate : wheels::TraitOf<predicate_test, T, Args...> {};
+        struct is_predicate : wheels::meta::TraitOf<predicate_test, T, Args...> {};
     } // namespace detail
 } // namespace seq
 

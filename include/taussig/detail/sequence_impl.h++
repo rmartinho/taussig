@@ -18,6 +18,8 @@
 
 #include <taussig/detail/iterators.h++> // IteratorValueType, IteratorReferenceType
 
+#include <wheels/meta/unqual.h++>
+
 #include <utility> // pair
 
 namespace seq {
@@ -50,7 +52,7 @@ namespace seq {
             }
         };
         template <typename S>
-        struct sequence_impl : sequence_impl_unqual<wheels::Unqualified<S>> {};
+        struct sequence_impl : sequence_impl_unqual<wheels::meta::Unqual<S>> {};
     } // namespace detail
 } // namespace seq
 

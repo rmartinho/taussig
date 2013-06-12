@@ -17,7 +17,7 @@
 #include <taussig/detail/has_value_type.h++>
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // Invoke
+#include <wheels/meta/invoke.h++>
 
 namespace seq {
     namespace detail {
@@ -38,7 +38,7 @@ namespace seq {
     struct value_type : detail::value_type<S> {};
 
     template <typename S>
-    using ValueType = wheels::Invoke<value_type<S>>;
+    using ValueType = wheels::meta::Invoke<value_type<S>>;
 } // namespace seq
 
 #endif // TAUSSIG_TRAITS_VALUE_TYPE_HPP

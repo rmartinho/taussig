@@ -17,7 +17,7 @@
 #include <taussig/detail/has_reference_type.h++>
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // Invoke
+#include <wheels/meta/invoke.h++>
 
 namespace seq {
     namespace detail {
@@ -39,7 +39,7 @@ namespace seq {
     struct reference_type : detail::reference_type<S> {};
 
     template <typename S>
-    using ReferenceType = wheels::Invoke<reference_type<S>>;
+    using ReferenceType = wheels::meta::Invoke<reference_type<S>>;
 } // namespace seq
 
 #endif // TAUSSIG_TRAITS_REFERENCE_TYPE_HPP

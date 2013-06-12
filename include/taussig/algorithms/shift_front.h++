@@ -19,7 +19,9 @@
 #include <taussig/traits/value_type.h++>
 #include <taussig/traits/is_sequence.h++>
 
-#include <wheels/meta.h++> // EnableIf, Bool, TraitOf
+#include <wheels/meta/bool.h++>
+#include <wheels/meta/trait_of.h++>
+// EnableIf, Bool, TraitOf
 
 #include <type_traits> // is_same
 #include <cassert>
@@ -30,10 +32,10 @@ namespace seq {
             template <typename T>
             std::is_same<ValueType<T>, decltype(std::declval<T>().shift_front())> static test(int);
             template <typename>
-            wheels::Bool<false> static test(...);
+            wheels::meta::False static test(...);
         };
         template <typename T>
-        struct has_shift_front : wheels::TraitOf<shift_front_test, T> {};
+        struct has_shift_front : wheels::meta::TraitOf<shift_front_test, T> {};
 
         template <typename S,
                   bool = has_shift_front<S>()>
@@ -55,7 +57,7 @@ namespace seq {
     //! *Effects*: skips the first element of the sequence `s`.
     //! *Returns*: the value that was skipped.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     ValueType<S> shift_front(S& s) {
         assert(!seq::empty(s));
         detail::shift_front<S>::call(s);

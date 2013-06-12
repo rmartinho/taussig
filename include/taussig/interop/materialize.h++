@@ -19,7 +19,8 @@
 
 #include <taussig/interop/begin_end.h++>
 
-#include <wheels/meta.h++> // EnableIf, deduced, is_deduced
+#include <wheels/meta/enable_if.h++>
+#include <wheels/meta/is_deduced.h++>
 
 #include <utility> // forward
 
@@ -30,7 +31,7 @@ namespace seq {
     //! *Returns*: a `C` container with all elements from the sequence.
     template <typename C,
               typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     C materialize(S&& s) {
         return C(seq::begin(s), seq::end(s));
     }
@@ -41,7 +42,7 @@ namespace seq {
     //! *Returns*: a `C` container with all elements from the sequence.
     template <template <typename...> class C,
               typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     C<ValueType<S>> materialize(S&& s) {
         return materialize<C<ValueType<S>>>(std::forward<S>(s));
     }
@@ -62,10 +63,10 @@ namespace seq {
     //! *Requires*: `S` is a sequence [soft].
     //! *Returns*: a proxy implicitly convertible to container types;
     //!            converting the proxy results in a container with all elements from the sequence.
-    template <typename C = wheels::deduced,
+    template <typename C = wheels::meta::deduced,
               typename S,
-              wheels::EnableIf<wheels::is_deduced<C>>...,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<wheels::meta::is_deduced<C>>...,
+              wheels::meta::EnableIf<is_sequence<S>>...>
     detail::materializer<S> materialize(S&& s) {
         return { s };
     }

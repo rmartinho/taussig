@@ -16,18 +16,20 @@
 
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // Bool, TraitOf
+#include <wheels/meta/bool.h++>
+#include <wheels/meta/depend_on.h++>
+#include <wheels/meta/trait_of.h++>
 
 namespace seq {
     namespace detail {
         struct value_type_test {
             template <typename T>
-            wheels::Bool<true, typename sequence_impl<T>::value_type> static test(int);
+            wheels::meta::DependOn<wheels::meta::True, typename sequence_impl<T>::value_type> static test(int);
             template <typename>
-            wheels::Bool<false> static test(...);
+            wheels::meta::False static test(...);
         };
         template <typename T>
-        struct has_value_type : wheels::TraitOf<value_type_test, T> {};
+        struct has_value_type : wheels::meta::TraitOf<value_type_test, T> {};
     } // namespace detail
 } // namespace seq
 

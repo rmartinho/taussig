@@ -16,7 +16,7 @@
 
 #include <taussig/traits/value_type.h++>
 
-#include <wheels/meta.h++> // TraitOf
+#include <wheels/meta/trait_of.h++>
 
 #include <type_traits> // is_same, false_type
 
@@ -34,7 +34,7 @@ namespace seq {
     //! *Returns*: `true` if `S` is a sequence with values of type `V`;
     //!            `false` otherwise.
     template <typename S, typename V>
-    struct is_sequence_of : wheels::TraitOf<detail::sequence_of_test, S, V> {};
+    struct is_sequence_of : wheels::meta::TraitOf<detail::sequence_of_test, S, V> {};
 } // namespace seq
 
 #endif // TAUSSIG_TRAITS_IS_SEQUENCE_OF_HPP

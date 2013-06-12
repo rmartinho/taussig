@@ -19,14 +19,14 @@
 
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 namespace seq {
     //! {function}
     //! *Requires*: `S` is a sequence [soft]; and `!empty(s)` [undefined].
     //! *Returns*: the first element of the sequence `s`.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     ReferenceType<S> front(S const& s) { return detail::sequence_impl<S>::front(s); }
 } // namespace seq
 

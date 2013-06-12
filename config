@@ -10,7 +10,7 @@ noRebuild = [ '-Wfatal-errors' ]
 systemLibs = []
 otherLibs = []
 
-systemHeaderPaths = [ 'deps' ]
+systemHeaderPaths = [ 'deps', 'deps/wheels/include' ]
 
 infoFiles = [ 'README.md COPYING.txt' ]
 

@@ -15,7 +15,7 @@
 #ifndef TAUSSIG_DETAIL_OPTIONAL_HPP
 #define TAUSSIG_DETAIL_OPTIONAL_HPP
 
-#include <wheels/meta.h++>
+#include <wheels/meta/storage_for.h++>
 
 #include <cassert>
 
@@ -51,6 +51,16 @@ namespace seq {
                 return *this;
             }
 
+            optional& operator=(T const& t) {
+                if(present) **this = t;
+                else place(t);
+                return *this;
+            }
+            optional& operator=(T&& t) {
+                if(present) **this = std::move(t);
+                else place(std::move(t));
+                return *this;
+            }
             optional& operator=(optional const& that) {
                 if(present && that.present) **this = *that;
                 else if(present) destroy();
@@ -79,7 +89,7 @@ namespace seq {
             explicit operator bool() const { return present; }
 
         private:
-            using storage_type = wheels::StorageFor<T>;
+            using storage_type = wheels::meta::StorageFor<T>;
 
             template <typename... Args>
             void place(Args&&... args) {

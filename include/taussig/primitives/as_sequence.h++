@@ -19,7 +19,11 @@
 #include <taussig/detail/iterators.h++> // has_begin_end, is_iterator_pair, ConstIteratorOf
 #include <taussig/detail/characters.h++> // is_null_terminated_string
 
-#include <wheels/meta.h++> // Unqualified, identity, Invoke, Bool, TraitOf
+#include <wheels/meta/unqual.h++>
+#include <wheels/meta/id.h++>
+#include <wheels/meta/invoke.h++>
+#include <wheels/meta/bool.h++>
+#include <wheels/meta/trait_of.h++>
 
 #include <iterator> // forward_iterator_tag, begin, end
 #include <utility> // forward, pair
@@ -35,12 +39,12 @@ namespace seq {
         struct adapted_source_test {
             template <typename T>
             // TODO deal with the Unqualified bits here
-            wheels::Bool<true, typename sequence_source<wheels::Unqualified<T>>::result> static test(int);
+            wheels::meta::DependOn<wheels::meta::True, typename sequence_source<wheels::meta::Unqual<T>>::result> static test(int);
             template <typename>
-            wheels::Bool<false> static test(...);
+            wheels::meta::False static test(...);
         };
         template <typename T>
-        struct is_adapted_source : wheels::TraitOf<adapted_source_test, T> {};
+        struct is_adapted_source : wheels::meta::TraitOf<adapted_source_test, T> {};
 
         struct true_sequence_tag { using type = true_sequence_tag; };
         struct iterable_tag { using type = iterable_tag; };
@@ -49,14 +53,14 @@ namespace seq {
         struct adapted_source_tag { using type = adapted_source_tag; };
 
         template <typename T,
-                  bool = is_true_sequence<wheels::Unqualified<T>>(),
+                  bool = is_true_sequence<wheels::meta::Unqual<T>>(),
                   bool = has_begin_end<T, std::forward_iterator_tag>(),
                   bool = is_iterator_pair<T>(),
-                  bool = is_null_terminated_string<wheels::Unqualified<T>>(),
+                  bool = is_null_terminated_string<wheels::meta::Unqual<T>>(),
                   bool = is_adapted_source<T>()>
-        struct source_kind_of : wheels::identity<void> {};
+        struct source_kind_of : wheels::meta::id<void> {};
         template <typename T>
-        using SourceKindOf = wheels::Invoke<source_kind_of<T>>;
+        using SourceKindOf = wheels::meta::Invoke<source_kind_of<T>>;
 
         template <typename T, bool I, bool P, bool Z, bool A>
         struct source_kind_of<T, true, I, P, Z, A> : true_sequence_tag {};
@@ -110,18 +114,18 @@ namespace seq {
         template <typename Char>
         struct as_sequence_impl<Char*, null_terminated_tag> {
         private:
-            using char_type = wheels::Unqualified<Char>;
+            using char_type = wheels::meta::Unqual<Char>;
         public:
             using result = std::pair<Char const*, Char const*>;
             static result forward(Char* p) { return { p, p + std::char_traits<char_type>::length(p) }; }
         };
         template <typename Char>
         struct as_sequence_impl<Char, null_terminated_tag>
-        : as_sequence_impl<wheels::Unqualified<Char>, null_terminated_tag> {};
+        : as_sequence_impl<wheels::meta::Unqual<Char>, null_terminated_tag> {};
 
         // TODO deal with the Unqualified bits here
         template <typename T>
-        struct as_sequence_impl<T, adapted_source_tag> : sequence_source<wheels::Unqualified<T>> {};
+        struct as_sequence_impl<T, adapted_source_tag> : sequence_source<wheels::meta::Unqual<T>> {};
     } // namespace detail
 
     namespace result_of {

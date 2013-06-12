@@ -14,7 +14,10 @@
 #ifndef TAUSSIG_DETAIL_CHARACTERS_HPP
 #define TAUSSIG_DETAIL_CHARACTERS_HPP
 
-#include <wheels/meta.h++>
+#include <wheels/meta/all.h++>
+#include <wheels/meta/decay.h++>
+#include <wheels/meta/remove_pointer.h++>
+#include <wheels/meta/remove_cv.h++>
 
 #include <type_traits>
 
@@ -41,9 +44,9 @@ namespace seq {
         //! *Returns*: true if `T` is a null-terminated string type, i.e., a pointer or array of a character type.
         template <typename T>
         struct is_null_terminated_string
-        : wheels::All<
-            std::is_pointer<wheels::Decay<T>>,
-            is_character<wheels::RemoveCv<wheels::RemovePointer<wheels::Decay<T>>>>
+        : wheels::meta::All<
+            std::is_pointer<wheels::meta::Decay<T>>,
+            is_character<wheels::meta::RemoveCv<wheels::meta::RemovePointer<wheels::meta::Decay<T>>>>
         > {};
     } // namespace detail
 } // namespace seq

@@ -18,7 +18,7 @@
 
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 namespace seq {
     //! {function}
@@ -26,7 +26,7 @@ namespace seq {
     //! *Returns*: `true` if the sequence `s` has no elements;
     //!            `false` otherwise.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     bool empty(S const& s) { return detail::sequence_impl<S>::empty(s); }
 } // namespace seq
 

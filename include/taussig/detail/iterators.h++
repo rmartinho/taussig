@@ -14,7 +14,9 @@
 #ifndef TAUSSIG_DETAIL_ITERATOR_HPP
 #define TAUSSIG_DETAIL_ITERATOR_HPP
 
-#include <wheels/meta.h++>
+#include <wheels/meta/all.h++>
+#include <wheels/meta/trait_of.h++>
+#include <wheels/meta/unqual.h++>
 
 #include <iterator>
 #include <tuple>
@@ -44,7 +46,7 @@ namespace seq {
         //! *Returns*: `true` if `T` is an Iterator with category `Cat`;
         //             `false` otherwise.
         template <typename T, typename Cat = std::input_iterator_tag>
-        struct is_iterator : wheels::TraitOf<is_iterator_test, T, Cat> {};
+        struct is_iterator : wheels::meta::TraitOf<is_iterator_test, T, Cat> {};
 
         // TODO ADL begin end
         namespace result_of {
@@ -56,7 +58,7 @@ namespace seq {
 
         struct has_begin_end_test {
             template <typename T, typename Cat>
-            wheels::All<
+            wheels::meta::All<
                 std::is_same<result_of::begin<T>, result_of::end<T>>,
                 is_iterator<result_of::begin<T>, Cat>
             > static test(int);
@@ -68,7 +70,7 @@ namespace seq {
         //             that return the same type of Iterator with category `Cat`;
         //             `false` otherwise.
         template <typename T, typename Cat = std::input_iterator_tag>
-        struct has_begin_end : wheels::TraitOf<has_begin_end_test, T, Cat> {};
+        struct has_begin_end : wheels::meta::TraitOf<has_begin_end_test, T, Cat> {};
 
         template <typename T, typename Cat>
         struct is_iterator_pair_impl : std::false_type {};
@@ -77,7 +79,7 @@ namespace seq {
         struct is_iterator_pair_impl<std::pair<I, I>, Cat> : is_iterator<I, Cat> {};
 
         template <typename T, typename Cat = std::input_iterator_tag>
-        struct is_iterator_pair : is_iterator_pair_impl<wheels::Unqualified<T>, Cat> {};
+        struct is_iterator_pair : is_iterator_pair_impl<wheels::meta::Unqual<T>, Cat> {};
 
         //! {metafunction}
         //! *Requires*: `std::begin` can be called with `T&` [soft].

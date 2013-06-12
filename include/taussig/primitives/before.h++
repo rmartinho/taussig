@@ -16,14 +16,14 @@
 
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 namespace seq {
     //! {function}
     //! *Requires*: `S` is a sequence [soft]; and `part` is a subsequence of `whole` [undefined].
     //! *Returns*: a sequence with the elements of `whole` that are before the elements of `part`.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     S before(S const& whole, S const& part) {
         return detail::sequence_impl<S>::before(whole, part);
     }

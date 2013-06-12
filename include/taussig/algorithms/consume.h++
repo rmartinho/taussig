@@ -18,14 +18,14 @@
 #include <taussig/primitives/pop_front.h++>
 #include <taussig/traits/is_sequence.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 namespace seq {
     //! {function}
     //! *Requires*: `S` is a sequence [soft].
     //! *Effects*: skips elements from the sequence `s` until it is empty.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     void consume(S& s) {
         while(!seq::empty(s)) {
             seq::pop_front(s);

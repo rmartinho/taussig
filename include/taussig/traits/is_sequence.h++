@@ -16,15 +16,17 @@
 
 #include <taussig/traits/value_type.h++>
 
-#include <wheels/meta.h++> // Bool, TraitOf
+#include <wheels/meta/bool.h++>
+#include <wheels/meta/depend_on.h++>
+#include <wheels/meta/trait_of.h++>
 
 namespace seq {
     namespace detail {
         struct sequence_test {
             template <typename T>
-            wheels::Bool<true, ValueType<T>> static test(int);
+            wheels::meta::DependOn<wheels::meta::True, ValueType<T>> static test(int);
             template <typename...>
-            wheels::Bool<false> static test(...);
+            wheels::meta::False static test(...);
         };
     } // namespace detail
 
@@ -32,7 +34,7 @@ namespace seq {
     //! *Returns*: `true` if `S` is a sequence;
     //!            `false` otherwise.
     template <typename S>
-    struct is_sequence : wheels::TraitOf<detail::sequence_test, S> {};
+    struct is_sequence : wheels::meta::TraitOf<detail::sequence_test, S> {};
 } // namespace seq
 
 #endif // TAUSSIG_TRAITS_IS_SEQUENCE_HPP

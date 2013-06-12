@@ -18,7 +18,7 @@
 
 #include <taussig/detail/sequence_impl.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 #include <cassert>
 
@@ -27,7 +27,7 @@ namespace seq {
     //! *Requires*: `S` is a sequence [soft]; and `!empty(s)` [undefined].
     //! *Effects*: skips the first element in the sequence `s`.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
+              wheels::meta::EnableIf<is_sequence<S>>...>
     void pop_front(S& s) {
         assert(!seq::empty(s));
         detail::sequence_impl<S>::pop_front(s);

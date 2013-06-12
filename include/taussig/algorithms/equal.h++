@@ -23,7 +23,7 @@
 
 #include <taussig/detail/fun_objects.h++>
 
-#include <wheels/meta.h++> // EnableIf
+#include <wheels/meta/enable_if.h++>
 
 namespace seq {
     //! {function}
@@ -32,8 +32,8 @@ namespace seq {
     //!              under the equivalence relation defined by `pred`;
     //!            `false` otherwise.
     template <typename S, typename R, typename Pred,
-              wheels::EnableIf<is_sequence<S>, is_sequence<R>>...,
-              wheels::EnableIf<detail::is_predicate<Pred, ReferenceType<S>, ReferenceType<R>>>...>
+              wheels::meta::EnableIf<is_sequence<S>, is_sequence<R>>...,
+              wheels::meta::EnableIf<detail::is_predicate<Pred, ReferenceType<S>, ReferenceType<R>>>...>
     bool equal(S s, R r, Pred&& pred) {
         while(!seq::empty(s) && !seq::empty(r)) {
             if(!pred(seq::front(s),seq::front(r))) return false;
@@ -48,7 +48,7 @@ namespace seq {
     //!              according to operator==;
     //!            `false` otherwise.
     template <typename S, typename R,
-              wheels::EnableIf<is_sequence<S>, is_sequence<R>>...>
+              wheels::meta::EnableIf<is_sequence<S>, is_sequence<R>>...>
     bool equal(S&& s, R&& r) {
         return seq::equal(std::forward<S>(s), std::forward<R>(r), detail::equal_to{});
     }

@@ -24,7 +24,9 @@
 
 #include <taussig/detail/optional.h++>
 
-#include <wheels/meta.h++> // RemoveReference, EnableIf, Decay
+#include <wheels/meta/remove_reference.h++>
+#include <wheels/meta/enable_if.h++>
+#include <wheels/meta/decay.h++>
 
 #include <iterator> // forward_iterator_tag
 #include <utility> // move, forward
@@ -51,7 +53,7 @@ namespace seq {
             using value_type = ValueType<Sequence>;
             using reference = ReferenceType<Sequence>;
             using difference_type = std::ptrdiff_t;
-            using pointer = wheels::RemoveReference<value_type>*;
+            using pointer = wheels::meta::RemoveReference<value_type>*;
 
             //! {constructor}
             //! *Constructs*: an end iterator.
@@ -111,16 +113,16 @@ namespace seq {
     //! *Requires*: `S` is a sequence [soft].
     //! *Returns*: an iterator to the start of `s`.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
-    detail::sequence_iterator<wheels::Decay<S>> begin(S&& s) {
+              wheels::meta::EnableIf<is_sequence<S>>...>
+    detail::sequence_iterator<wheels::meta::Decay<S>> begin(S&& s) {
         return { std::forward<S>(s) };
     }
     //! {function}
     //! *Requires*: `S` is a sequence [soft].
     //! *Returns*: an iterator to the end of `s`.
     template <typename S,
-              wheels::EnableIf<is_sequence<S>>...>
-    detail::sequence_iterator<wheels::Decay<S>> end(S&&) {
+              wheels::meta::EnableIf<is_sequence<S>>...>
+    detail::sequence_iterator<wheels::meta::Decay<S>> end(S&&) {
         return {};
     }
 } // namespace seq
