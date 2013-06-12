@@ -36,7 +36,6 @@ namespace seq {
             static bool empty(S const& s) { return s.empty(); }
             static reference front(S const& s) { return s.front(); }
             static void pop_front(S& s) { s.pop_front(); }
-            static S before(S const& whole, S const& part) { whole.before(part); }
         };
 
         template <typename I>
@@ -47,9 +46,6 @@ namespace seq {
             static bool empty(std::pair<I, I> const& p) { return p.first == p.second; }
             static reference front(std::pair<I, I> const& p) { return *p.first; }
             static void pop_front(std::pair<I, I>& p) { ++p.first; }
-            static std::pair<I, I> before(std::pair<I, I> const& whole, std::pair<I, I> const& part) {
-                return { whole.first, part.first };
-            }
         };
         template <typename S>
         struct sequence_impl : sequence_impl_unqual<wheels::meta::Unqual<S>> {};

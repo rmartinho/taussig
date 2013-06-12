@@ -18,6 +18,5 @@
 #include <taussig/primitives/empty.h++>
 #include <taussig/primitives/front.h++>
 #include <taussig/primitives/pop_front.h++>
-#include <taussig/primitives/before.h++>
 
 #endif // TAUSSIG_PRIMITIVES_HPP

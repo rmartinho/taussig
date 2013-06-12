@@ -29,8 +29,7 @@ namespace seq {
                 typename wheels::meta::Unqual<T>::is_true_sequence,
                 std::is_convertible<decltype(std::declval<T>().empty()), bool>,
                 std::is_convertible<decltype(std::declval<T>().front()), typename T::value_type>,
-                std::is_void<decltype(std::declval<T>().pop_front())>,
-                std::is_same<decltype(std::declval<T>().before(std::declval<T>())), T>
+                std::is_void<decltype(std::declval<T>().pop_front())>
             > static test(int);
             template <typename...>
             wheels::meta::False static test(...);
