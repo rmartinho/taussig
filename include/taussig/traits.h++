@@ -16,6 +16,7 @@
 
 #include <taussig/traits/is_true_sequence.h++>
 #include <taussig/traits/true_sequence.h++>
+#include <taussig/traits/fake_sequence.h++>
 
 #include <taussig/traits/is_sequence.h++>
 #include <taussig/traits/is_sequence_of.h++>

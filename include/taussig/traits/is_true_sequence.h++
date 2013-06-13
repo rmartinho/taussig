@@ -30,6 +30,7 @@ namespace seq {
                 std::is_convertible<decltype(std::declval<T>().empty()), bool>,
                 std::is_convertible<decltype(std::declval<T>().front()), typename T::value_type>,
                 std::is_void<decltype(std::declval<T>().pop_front())>
+                // TODO value_type + reference test
             > static test(int);
             template <typename...>
             wheels::meta::False static test(...);

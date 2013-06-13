@@ -9,17 +9,26 @@
 // You should have received a copy of the CC0 Public Domain Dedication along with this software.
 // If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-// Sequence algorithms
+// Sequence archetype
 
-#ifndef TAUSSIG_ALGORITHMS_HPP
-#define TAUSSIG_ALGORITHMS_HPP
+#ifndef TAUSSIG_TRAITS_FAKE_SEQUENCE_HPP
+#define TAUSSIG_TRAITS_FAKE_SEQUENCE_HPP
 
-#include <taussig/algorithms/shift_front.h++>
+#include <type_traits> // true_type
 
-#include <taussig/algorithms/consume.h++>
-#include <taussig/algorithms/equal.h++>
+namespace seq {
+    template <typename T>
+    struct fake_sequence {
+        using is_true_sequence = std::true_type;
 
-#include <taussig/algorithms/map.h++>
+        using value_type = T;
+        using reference = T;
 
-#endif // TAUSSIG_ALGORITHMS_HPP
+        bool empty() const;
+        void pop_front();
+        reference front() const;
+    };
+} // namespace seq
+
+#endif // TAUSSIG_TRAITS_TRUE_SEQUENCE_HPP
 
