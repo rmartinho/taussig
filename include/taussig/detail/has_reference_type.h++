@@ -18,6 +18,7 @@
 
 #include <wheels/meta/bool.h++>
 #include <wheels/meta/trait_of.h++>
+#include <wheels/meta/depend_on.h++>
 
 namespace seq {
     namespace detail {

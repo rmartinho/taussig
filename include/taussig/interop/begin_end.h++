@@ -22,7 +22,7 @@
 #include <taussig/primitives/pop_front.h++>
 #include <taussig/primitives/empty.h++>
 
-#include <taussig/detail/optional.h++>
+#include <wheels/optional.h++>
 
 #include <wheels/meta/remove_reference.h++>
 #include <wheels/meta/enable_if.h++>
@@ -49,7 +49,7 @@ namespace seq {
 
             static_assert(is_sequence<Sequence>(), "sequence_iterator requires a sequence");
 
-            using iterator_category = std::forward_iterator_tag;
+            using iterator_category = std::input_iterator_tag;
             using value_type = ValueType<Sequence>;
             using reference = ReferenceType<Sequence>;
             using difference_type = std::ptrdiff_t;
@@ -105,7 +105,7 @@ namespace seq {
                 return !s || seq::empty(*s);
             }
 
-            detail::optional<Sequence> s;
+            wheels::optional<Sequence> s;
         };
     } // namespace detail
 

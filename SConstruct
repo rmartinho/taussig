@@ -136,7 +136,7 @@ def getObjectTargets(folder, cfg):
 
 def makeDebug(base, alias):
     env = cloneLib(base, alias, 'debug')
-    env.MergeFlags([ '-g' ])
+    env.MergeFlags([ '-g', '-O0' ])
     env.Append(CPPDEFINES = [ '_GLIBCXX_DEBUG' ])
     return env
 

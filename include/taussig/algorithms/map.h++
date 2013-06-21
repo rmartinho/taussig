@@ -14,8 +14,12 @@
 #ifndef TAUSSIG_ALGORITHMS_MAP_HPP
 #define TAUSSIG_ALGORITHMS_MAP_HPP
 
+#include <taussig/primitives/empty.h++>
+#include <taussig/primitives/pop_front.h++>
+#include <taussig/primitives/front.h++>
 #include <taussig/traits/is_true_sequence.h++>
 #include <taussig/traits/true_sequence.h++>
+#include <taussig/traits/reference_type.h++>
 #include <taussig/traits/fake_sequence.h++>
 
 #include <wheels/fun/result_of.h++>
@@ -42,6 +46,11 @@ namespace seq {
         Sequence s;
     };
     static_assert(is_true_sequence<map_sequence<char(*)(char), fake_sequence<char>>>(), "map_sequence must be a true sequence");
+
+    template <typename Fun, typename Sequence>
+    map_sequence<Fun, Sequence> map(Fun&& fun, Sequence&& sequence) {
+        return { std::forward<Fun>(fun), std::forward<Sequence>(sequence) };
+    }
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_MAP_HPP
