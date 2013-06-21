@@ -24,6 +24,7 @@
 
 #include <wheels/fun/result_of.h++>
 #include <wheels/meta/decay.h++>
+#include <wheels/meta/enable_if.h++>
 
 #include <utility> // forward, pair
 
@@ -39,7 +40,7 @@ namespace seq {
 
         bool empty() const { return seq::empty(s); }
         void pop_front() { seq::pop_front(s); }
-        reference front() const { return fun(seq::front(s)); }
+        reference front() const { return wheels::fun::invoke(fun, seq::front(s)); }
 
     private:
         Fun fun;
@@ -47,7 +48,10 @@ namespace seq {
     };
     static_assert(is_true_sequence<map_sequence<char(*)(char), fake_sequence<char>>>(), "map_sequence must be a true sequence");
 
-    template <typename Fun, typename Sequence>
+    template <typename Fun, typename Sequence,
+              wheels::meta::EnableIf<is_sequence<Sequence>>...,
+              wheels::meta::EnableIf<wheels::fun::is_invocable<Fun, void(ReferenceType<Sequence>)>>...,
+              wheels::meta::DisableIf<std::is_void<wheels::fun::ResultOf<Fun(ReferenceType<Sequence>)>>>...>
     map_sequence<Fun, Sequence> map(Fun&& fun, Sequence&& sequence) {
         return { std::forward<Fun>(fun), std::forward<Sequence>(sequence) };
     }
