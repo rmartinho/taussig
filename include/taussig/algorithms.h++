@@ -20,6 +20,7 @@
 #include <taussig/algorithms/equal.h++>
 
 #include <taussig/algorithms/map.h++>
+#include <taussig/algorithms/flatten.h++>
 
 #endif // TAUSSIG_ALGORITHMS_HPP
 

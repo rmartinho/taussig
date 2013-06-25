@@ -31,9 +31,6 @@
 #include <iterator> // forward_iterator_tag
 #include <utility> // move, forward
 #include <cstddef> // ptrdiff_t
-
-// ---
-
 #include <type_traits>
 
 namespace seq {
@@ -58,7 +55,7 @@ namespace seq {
             //! {constructor}
             //! *Constructs*: an end iterator.
             //! *Ensures*: `is_end()`.
-            sequence_iterator() = default;
+            sequence_iterator() : s() {}
 
             //! {constructor}
             //! *Constructs*: an iterator to the beginning of `seq`.
