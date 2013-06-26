@@ -24,6 +24,7 @@
 #include <wheels/meta/invoke.h++>
 #include <wheels/meta/bool.h++>
 #include <wheels/meta/trait_of.h++>
+#include <wheels/meta/depend_on.h++>
 
 #include <iterator> // forward_iterator_tag, begin, end
 #include <utility> // forward, pair
