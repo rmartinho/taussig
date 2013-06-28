@@ -17,9 +17,14 @@
 #include <taussig/primitives/empty.h++>
 #include <taussig/primitives/front.h++>
 #include <taussig/primitives/pop_front.h++>
-#include <taussig/traits/is_true_sequence.h++>
+#include <taussig/primitives/as_sequence.h++>
 #include <taussig/traits/true_sequence.h++>
+#include <taussig/traits/is_true_sequence.h++>
 #include <taussig/traits/fake_sequence.h++>
+#include <taussig/traits/reference_type.h++>
+#include <taussig/traits/value_type.h++>
+
+#include <taussig/algorithms/detail/source_sequence.h++>
 
 #include <wheels/fun/result_of.h++>
 #include <wheels/meta/decay.h++>
@@ -37,7 +42,7 @@ namespace seq {
                   wheels::meta::DisableIf<wheels::meta::is_related<flatten_sequence<Sequence>, SequenceF>>...>
         flatten_sequence(SequenceF&& s) : s(std::forward<SequenceF>(s)) {}
 
-        using subsequence_type = ReferenceType<Sequence>;
+        using subsequence_type = detail::source_sequence<ReferenceType<Sequence>>;
         using reference = ReferenceType<subsequence_type>;
         using value_type = wheels::meta::Decay<reference>;
 
@@ -64,7 +69,7 @@ namespace seq {
 
         void skip_empties() const {
             while(!seq::empty(s) && current_empty()) {
-                current = seq::front(s);
+                current = subsequence_type(seq::front(s));
                 seq::pop_front(s);
             }
         }
@@ -73,7 +78,7 @@ namespace seq {
 
     template <typename Sequence,
               wheels::meta::EnableIf<is_sequence<Sequence>>...,
-              wheels::meta::EnableIf<is_sequence<ReferenceType<Sequence>>>...>
+              wheels::meta::EnableIf<is_sequence<result_of::as_sequence<ReferenceType<Sequence>>>>...>
     flatten_sequence<Sequence> flatten(Sequence&& sequence) {
         return { std::forward<Sequence>(sequence) };
     }

@@ -21,6 +21,7 @@
 
 #include <taussig/algorithms/map.h++>
 #include <taussig/algorithms/flatten.h++>
+#include <taussig/algorithms/flat_map.h++>
 
 #endif // TAUSSIG_ALGORITHMS_HPP
 
