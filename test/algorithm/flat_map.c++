@@ -25,7 +25,7 @@ TEST_CASE("flat_map", "flat_map tests") {
     auto s = seq::as_sequence(v);
     auto r = seq::flat_map(f, s);
     std::vector<int> expected { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    auto result = seq::materialize<std::vector<int>>(r);
+    std::vector<int> result = seq::materialize(r);
 
     REQUIRE(expected.size() == result.size());
     for(auto i = 0u; i < v.size(); ++i) {
