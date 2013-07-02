@@ -24,7 +24,7 @@
 #include <taussig/traits/reference_type.h++>
 #include <taussig/traits/value_type.h++>
 
-#include <taussig/algorithms/detail/source_sequence.h++>
+#include <taussig/detail/source_sequence.h++>
 
 #include <wheels/fun/result_of.h++>
 #include <wheels/meta/decay.h++>
