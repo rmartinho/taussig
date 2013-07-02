@@ -25,6 +25,7 @@
 #include <wheels/meta/bool.h++>
 #include <wheels/meta/trait_of.h++>
 #include <wheels/meta/depend_on.h++>
+#include <wheels/optional.h++>
 
 #include <iterator> // forward_iterator_tag, begin, end
 #include <utility> // forward, pair
@@ -47,7 +48,14 @@ namespace seq {
         template <typename T>
         struct is_adapted_source : wheels::meta::TraitOf<adapted_source_test, T> {};
 
+        // TODO get into separate detail file
+        template <typename T>
+        struct is_optional : wheels::meta::False {};
+        template <typename T>
+        struct is_optional<wheels::optional<T>> : wheels::meta::True {};
+
         struct true_sequence_tag { using type = true_sequence_tag; };
+        struct optional_tag { using type = optional_tag; };
         struct iterable_tag { using type = iterable_tag; };
         struct iterator_pair_tag { using type = iterator_pair_tag; };
         struct null_terminated_tag { using type = null_terminated_tag; };
@@ -55,6 +63,7 @@ namespace seq {
 
         template <typename T,
                   bool = is_true_sequence<wheels::meta::Unqual<T>>(),
+                  bool = is_optional<wheels::meta::Unqual<T>>(),
                   bool = has_begin_end<T, std::forward_iterator_tag>(),
                   bool = is_iterator_pair<T>(),
                   bool = is_null_terminated_string<wheels::meta::Unqual<T>>(),
@@ -63,18 +72,20 @@ namespace seq {
         template <typename T>
         using SourceKindOf = wheels::meta::Invoke<source_kind_of<T>>;
 
+        template <typename T, bool O, bool I, bool P, bool Z, bool A>
+        struct source_kind_of<T, true, O, I, P, Z, A> : true_sequence_tag {};
         template <typename T, bool I, bool P, bool Z, bool A>
-        struct source_kind_of<T, true, I, P, Z, A> : true_sequence_tag {};
-        template <typename T, bool I, bool P, bool Z>
-        struct source_kind_of<T, false, I, P, Z, true> : adapted_source_tag {};
+        struct source_kind_of<T, false, true, I, P, Z, A> : optional_tag {};
+        template <typename T, bool O, bool I, bool P, bool Z>
+        struct source_kind_of<T, false, O, I, P, Z, true> : adapted_source_tag {};
         template <typename T, bool P>
-        struct source_kind_of<T, false, true, P, true, false> : null_terminated_tag {};
+        struct source_kind_of<T, false, false, true, P, true, false> : null_terminated_tag {};
         template <typename T, bool P>
-        struct source_kind_of<T, false, true, P, false, false> : iterable_tag {};
+        struct source_kind_of<T, false, false, true, P, false, false> : iterable_tag {};
         template <typename T, bool Z>
-        struct source_kind_of<T, false, false, true, Z, false> : iterator_pair_tag {};
+        struct source_kind_of<T, false, false, false, true, Z, false> : iterator_pair_tag {};
         template <typename T>
-        struct source_kind_of<T, false, false, false, true, false> : null_terminated_tag {};
+        struct source_kind_of<T, false, false, false, false, true, false> : null_terminated_tag {};
 
         //! {traits}
         //! *Note*: implementation backend for `as_sequence` and `result_of::as_sequence`.
@@ -86,6 +97,12 @@ namespace seq {
         struct as_sequence_impl<S, true_sequence_tag> {
             using result = S;
             static result forward(S&& s) { return std::forward<S>(s); }
+        };
+
+        template <typename Optional>
+        struct as_sequence_impl<Optional, optional_tag> {
+            using result = Optional;
+            static result forward(Optional&& o) { return std::forward<Optional>(o); }
         };
 
         template <typename Iterable>

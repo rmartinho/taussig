@@ -70,3 +70,20 @@ TEST_CASE("adapted_source", "adapting a sequence source") {
     seq::pop_front(ns);
     REQUIRE(seq::empty(ns));
 }
+TEST_CASE("optional", "optional-as-sequence tests") {
+    SECTION("none", "none is empty") {
+        wheels::optional<int> o = wheels::none;
+        auto&& s = seq::as_sequence(o);
+        REQUIRE(seq::empty(s));
+    }
+    SECTION("some", "some is not empty") {
+        wheels::optional<int> o = 42;
+        auto&& s = seq::as_sequence(o);
+        REQUIRE(!seq::empty(s));
+        REQUIRE(seq::front(s) == 42);
+        REQUIRE(bool(o) == true);
+        seq::pop_front(s);
+        REQUIRE(seq::empty(s));
+        REQUIRE(bool(o) == false);
+    }
+}

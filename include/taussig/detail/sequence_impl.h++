@@ -19,6 +19,7 @@
 #include <taussig/detail/iterators.h++> // IteratorValueType, IteratorReferenceType
 
 #include <wheels/meta/unqual.h++>
+#include <wheels/optional.h++>
 
 #include <utility> // pair
 
@@ -36,6 +37,16 @@ namespace seq {
             static bool empty(S const& s) { return s.empty(); }
             static reference front(S const& s) { return s.front(); }
             static void pop_front(S& s) { s.pop_front(); }
+        };
+
+        template <typename T>
+        struct sequence_impl_unqual<wheels::optional<T>, false> {
+            using value_type = T;
+            using reference = T const&;
+
+            static bool empty(wheels::optional<T> const& o) { return !o; }
+            static reference front(wheels::optional<T> const& o) { return *o; }
+            static void pop_front(wheels::optional<T>& o) { o = wheels::none; }
         };
 
         template <typename I>
