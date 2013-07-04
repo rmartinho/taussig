@@ -26,16 +26,17 @@
 #include <wheels/meta/decay.h++>
 #include <wheels/meta/enable_if.h++>
 
-#include <utility> // forward, pair
+#include <utility> // forward, pair, declval
 
 namespace seq {
-    template <typename Fun, typename Sequence>
+    template <typename Fun, typename Seq>
     struct map_sequence : true_sequence {
     public:
-        template <typename FunF, typename SequenceF>
-        map_sequence(FunF&& fun, SequenceF&& s) : fun(std::forward<FunF>(fun)), s(std::forward<SequenceF>(s)) {}
+        template <typename FunF, typename SeqF>
+        map_sequence(FunF&& fun, SeqF&& s)
+        : fun(std::forward<FunF>(fun)), s(std::forward<SeqF>(s)) {}
 
-        using reference = wheels::fun::ResultOf<Fun(ReferenceType<Sequence>)>;
+        using reference = wheels::fun::ResultOf<Fun(ReferenceType<Seq>)>;
         using value_type = wheels::meta::Decay<reference>;
 
         bool empty() const { return seq::empty(s); }
@@ -44,17 +45,21 @@ namespace seq {
 
     private:
         Fun fun;
-        Sequence s;
+        Seq s;
     };
     static_assert(is_true_sequence<map_sequence<char(*)(char), fake_sequence<char>>>(), "map_sequence must be a true sequence");
 
-    template <typename Fun, typename Sequence,
-              wheels::meta::EnableIf<is_sequence<Sequence>>...,
-              wheels::meta::EnableIf<wheels::fun::is_invocable<Fun, void(ReferenceType<Sequence>)>>...,
-              wheels::meta::DisableIf<std::is_void<wheels::fun::ResultOf<Fun(ReferenceType<Sequence>)>>>...>
-    map_sequence<Fun, Sequence> map(Fun&& fun, Sequence&& sequence) {
-        return { std::forward<Fun>(fun), std::forward<Sequence>(sequence) };
+    template <typename Fun, typename Seq,
+              wheels::meta::EnableIf<is_sequence<Seq>>...,
+              wheels::meta::EnableIf<wheels::fun::is_invocable<Fun, void(ReferenceType<Seq>)>>...,
+              wheels::meta::DisableIf<std::is_void<wheels::fun::ResultOf<Fun(ReferenceType<Seq>)>>>...>
+    map_sequence<Fun, Seq> map(Fun&& fun, Seq&& s) {
+        return { std::forward<Fun>(fun), std::forward<Seq>(s) };
     }
+    namespace result_of {
+        template <typename Fun, typename Seq>
+        using map = decltype(seq::map(std::declval<Fun>(), std::declval<Seq>()));
+    } // namespace result_of
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_MAP_HPP

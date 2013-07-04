@@ -17,12 +17,19 @@
 #include <taussig/algorithms/flatten.h++>
 #include <taussig/algorithms/map.h++>
 
+#include <utility> // declval
+
 namespace seq {
-    template <typename Fun, typename Sequence>
-    auto flat_map(Fun&& fun, Sequence&& sequence)
-    -> decltype(seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Sequence>(sequence)))) {
-        return seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Sequence>(sequence)));
+    template <typename Fun, typename Seq>
+    auto flat_map(Fun&& fun, Seq&& s)
+    -> decltype(seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Seq>(s)))) {
+        return seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Seq>(s)));
     }
+
+    namespace result_of {
+        template <typename Fun, typename Seq>
+        using flat_map = decltype(seq::flat_map(std::declval<Fun>(), std::declval<Seq>()));
+    } // namespace result_of
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_FLATTEN_HPP

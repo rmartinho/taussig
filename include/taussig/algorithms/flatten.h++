@@ -32,17 +32,17 @@
 #include <wheels/meta/is_related.h++>
 #include <wheels/optional.h++>
 
-#include <utility> // forward
+#include <utility> // forward, declval
 
 namespace seq {
-    template <typename Sequence>
+    template <typename Seq>
     struct flatten_sequence : true_sequence {
     public:
-        template <typename SequenceF,
-                  wheels::meta::DisableIf<wheels::meta::is_related<flatten_sequence<Sequence>, SequenceF>>...>
-        flatten_sequence(SequenceF&& s) : s(std::forward<SequenceF>(s)) {}
+        template <typename SeqF,
+                  wheels::meta::DisableIf<wheels::meta::is_related<flatten_sequence<Seq>, SeqF>>...>
+        flatten_sequence(SeqF&& s) : s(std::forward<SeqF>(s)) {}
 
-        using subsequence_type = detail::source_sequence<ReferenceType<Sequence>>;
+        using subsequence_type = detail::source_sequence<ReferenceType<Seq>>;
         using reference = ReferenceType<subsequence_type>;
         using value_type = wheels::meta::Decay<reference>;
 
@@ -60,8 +60,9 @@ namespace seq {
         }
 
     private:
+        // TODO oh my mutable
         mutable wheels::optional<subsequence_type> current;
-        mutable Sequence s;
+        mutable Seq s;
 
         bool current_empty() const {
             return !current || seq::empty(*current);
@@ -76,12 +77,17 @@ namespace seq {
     };
     static_assert(is_true_sequence<flatten_sequence<fake_sequence<fake_sequence<char>>>>(), "flatten_sequence must be a true sequence");
 
-    template <typename Sequence,
-              wheels::meta::EnableIf<is_sequence<Sequence>>...,
-              wheels::meta::EnableIf<is_sequence<result_of::as_sequence<ReferenceType<Sequence>>>>...>
-    flatten_sequence<Sequence> flatten(Sequence&& sequence) {
-        return { std::forward<Sequence>(sequence) };
+    template <typename Seq,
+              wheels::meta::EnableIf<is_sequence<Seq>>...,
+              wheels::meta::EnableIf<is_sequence<result_of::as_sequence<ReferenceType<Seq>>>>...>
+    flatten_sequence<Seq> flatten(Seq&& sequence) {
+        return { std::forward<Seq>(sequence) };
     }
+
+    namespace result_of {
+        template <typename Seq>
+        using flatten = decltype(seq::flatten(std::declval<Seq>()));
+    } // namespace result_of
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_FLATTEN_HPP
