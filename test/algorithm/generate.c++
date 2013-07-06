@@ -25,7 +25,7 @@
 
 TEST_CASE("generate", "generate tests") {
     auto gene = [](int n) {
-        return n < 10? wheels::optional<std::tuple<int, int>>(std::make_tuple(n, n+1)) : wheels::none;
+        return n < 10? wheels::some(std::make_tuple(n, n+1)) : wheels::none;
     };
     auto s = seq::generate(gene, 0);
     std::vector<int> v = seq::materialize(s);

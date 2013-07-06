@@ -21,6 +21,7 @@
 
 #include <taussig/traits/true_sequence.h++>
 #include <taussig/traits/value_type.h++>
+#include <taussig/traits/is_true_sequence.h++>
 
 #include <tuple> // tuple_element
 #include <utility> // forward
@@ -50,9 +51,10 @@ namespace seq {
         }
 
     private:
-        Fun fun;
+        wheels::meta::Decay<Fun> fun;
         Result result;
     };
+    static_assert(is_true_sequence<generate_sequence<wheels::optional<std::tuple<int, int>>(int), int>>(), "generate_sequence is a sequence");
 
     namespace result_of {
         template <typename Fun, typename Seed>
