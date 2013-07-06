@@ -20,16 +20,15 @@
 #include <utility> // declval
 
 namespace seq {
-    template <typename Fun, typename Seq>
-    auto flat_map(Fun&& fun, Seq&& s)
-    -> decltype(seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Seq>(s)))) {
-        return seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Seq>(s)));
-    }
-
     namespace result_of {
         template <typename Fun, typename Seq>
-        using flat_map = decltype(seq::flat_map(std::declval<Fun>(), std::declval<Seq>()));
+        using flat_map = flatten<map<Fun, Seq>>;
     } // namespace result_of
+
+    template <typename Fun, typename Seq>
+    result_of::flat_map<Fun, Seq> flat_map(Fun&& fun, Seq&& s) {
+        return seq::flatten(seq::map(std::forward<Fun>(fun), std::forward<Seq>(s)));
+    }
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_FLATTEN_HPP
