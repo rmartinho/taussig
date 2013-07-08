@@ -24,10 +24,11 @@
 #include <type_traits>
 
 TEST_CASE("generate", "generate tests") {
-    auto gene = [](int n) {
-        return n < 10? wheels::some(std::make_tuple(n, n+1)) : wheels::none;
+    int n = 0;
+    auto gene = [n]() mutable {
+        return n < 10? wheels::some(n++) : wheels::none;
     };
-    auto s = seq::generate(gene, 0);
+    auto s = seq::generate(gene);
     std::vector<int> v = seq::materialize(s);
     std::vector<int> result { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 

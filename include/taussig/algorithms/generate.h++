@@ -17,6 +17,7 @@
 #include <wheels/adl/get.h++>
 #include <wheels/fun/result_of.h++>
 #include <wheels/meta/decay.h++>
+#include <wheels/meta/is_related.h++>
 //#include <wheels/tuple.h++>
 
 #include <taussig/traits/true_sequence.h++>
@@ -27,43 +28,44 @@
 #include <utility> // forward
 
 namespace seq {
-    template <typename Fun, typename State>
+    template <typename Fun>
     struct generate_sequence : true_sequence {
     private:
-        using Result = wheels::fun::ResultOf<Fun&(State)>;
+        using Result = wheels::fun::ResultOf<Fun&()>;
 
     public:
-        template <typename FunF, typename StateF>
-        generate_sequence(FunF&& fun, StateF&& seed)
-        : fun(std::forward<FunF>(fun)), result(wheels::fun::invoke(fun, std::forward<StateF>(seed))) {}
+        template <typename FunF,
+                  wheels::meta::DisableIfRelated<FunF, generate_sequence<Fun>>...>
+        explicit generate_sequence(FunF&& fun)
+        : fun(std::forward<FunF>(fun)), result(wheels::fun::invoke(this->fun)) {}
 
-        using reference = typename std::tuple_element<0, ValueType<Result>>::type;
+        using reference = ValueType<Result>;
         using value_type = wheels::meta::Decay<reference>;
 
         bool empty() const {
             return !result;
         }
         reference front() const {
-            return wheels::adl::get<0>(*result);
+            return *result;
         }
         void pop_front() {
-            result = wheels::fun::invoke(fun, wheels::adl::get<1>(std::move(*result)));
+            result = wheels::fun::invoke(fun);
         }
 
     private:
         wheels::meta::Decay<Fun> fun;
         Result result;
     };
-    static_assert(is_true_sequence<generate_sequence<wheels::optional<std::tuple<int, int>>(int), int>>(), "generate_sequence is a sequence");
+    static_assert(is_true_sequence<generate_sequence<wheels::optional<int>()>>(), "generate_sequence is a sequence");
 
     namespace result_of {
-        template <typename Fun, typename Seed>
-        using generate = generate_sequence<wheels::meta::Decay<Fun>, Seed>;
+        template <typename Fun>
+        using generate = generate_sequence<wheels::meta::Decay<Fun>>;
     } // namespace result_of
 
-    template <typename Fun, typename Seed>
-    result_of::generate<Fun, Seed> generate(Fun&& fun, Seed&& seed) {
-        return { std::forward<Fun>(fun), std::forward<Seed>(seed) };
+    template <typename Fun>
+    result_of::generate<Fun> generate(Fun&& fun) {
+        return result_of::generate<Fun>(std::forward<Fun>(fun));
     }
 } // namespace seq
 
