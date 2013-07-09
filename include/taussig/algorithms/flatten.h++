@@ -44,7 +44,7 @@ namespace seq {
     public:
         template <typename SeqF,
                   wheels::meta::DisableIfRelated<SeqF, flatten_sequence<Seq>>...>
-        flatten_sequence(SeqF&& s) : s(std::forward<SeqF>(s)) {}
+        explicit flatten_sequence(SeqF&& s) : s(std::forward<SeqF>(s)) {}
 
         using reference = ReferenceType<subseq_type>;
         using value_type = wheels::meta::Decay<reference>;
@@ -80,17 +80,17 @@ namespace seq {
     };
     static_assert(is_true_sequence<flatten_sequence<fake_sequence<fake_sequence<char>>>>(), "flatten_sequence must be a true sequence");
 
-    namespace result_of {
-        template <typename Seq>
-        using flatten = flatten_sequence<Seq>;
-    } // namespace result_of
-
     template <typename Seq,
               wheels::meta::EnableIf<is_sequence<Seq>>...,
               wheels::meta::EnableIf<is_sequence<result_of::as_sequence<ReferenceType<Seq>>>>...>
-    result_of::flatten<Seq> flatten(Seq&& sequence) {
-        return { std::forward<Seq>(sequence) };
+    flatten_sequence<Seq> flatten(Seq&& sequence) {
+        return flatten_sequence<Seq>(std::forward<Seq>(sequence));
     }
+
+    namespace result_of {
+        template <typename Seq>
+        using flatten = decltype(seq::flatten(std::declval<Seq>()));
+    } // namespace result_of
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_FLATTEN_HPP

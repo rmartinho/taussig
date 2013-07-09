@@ -52,18 +52,18 @@ namespace seq {
     };
     static_assert(is_true_sequence<map_sequence<char(*)(char), fake_sequence<char>>>(), "map_sequence must be a true sequence");
 
-    namespace result_of {
-        template <typename Fun, typename Seq>
-        using map = map_sequence<Fun, Seq>;
-    } // namespace result_of
-
     template <typename Fun, typename Seq,
               wheels::meta::EnableIf<is_sequence<Seq>>...,
               wheels::meta::EnableIf<wheels::fun::is_invocable<Fun, void(ReferenceType<Seq>)>>...,
               wheels::meta::DisableIf<std::is_void<wheels::fun::ResultOf<Fun(ReferenceType<Seq>)>>>...>
-    result_of::map<Fun, Seq> map(Fun&& fun, Seq&& s) {
+    map_sequence<Fun, Seq> map(Fun&& fun, Seq&& s) {
         return { std::forward<Fun>(fun), std::forward<Seq>(s) };
     }
+
+    namespace result_of {
+        template <typename Fun, typename Seq>
+        using map = decltype(seq::map(std::declval<Fun>(), std::declval<Seq>()));
+    } // namespace result_of
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_MAP_HPP

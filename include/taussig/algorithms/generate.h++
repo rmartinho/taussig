@@ -59,15 +59,17 @@ namespace seq {
     };
     static_assert(is_true_sequence<generate_sequence<wheels::optional<int>()>>(), "generate_sequence is a sequence");
 
+    template <typename Fun,
+              wheels::meta::EnableIf<wheels::fun::is_invocable<Fun, void()>>...>
+              // TODO check for optional result
+    generate_sequence<Fun> generate(Fun&& fun) {
+        return generate_sequence<Fun>(std::forward<Fun>(fun));
+    }
+
     namespace result_of {
         template <typename Fun>
-        using generate = generate_sequence<wheels::meta::Decay<Fun>>;
+        using generate = decltype(seq::generate(std::declval<Fun>()));
     } // namespace result_of
-
-    template <typename Fun>
-    result_of::generate<Fun> generate(Fun&& fun) {
-        return result_of::generate<Fun>(std::forward<Fun>(fun));
-    }
 } // namespace seq
 
 #endif // TAUSSIG_ALGORITHMS_GENERATE_HPP
