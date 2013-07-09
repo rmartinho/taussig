@@ -31,7 +31,8 @@ namespace seq {
     template <typename Fun>
     struct generate_sequence : true_sequence {
     private:
-        using Result = wheels::fun::ResultOf<Fun&()>;
+        using fun_type = wheels::meta::Decay<Fun>;
+        using result_type = wheels::fun::ResultOf<fun_type&()>;
 
     public:
         template <typename FunF,
@@ -39,7 +40,7 @@ namespace seq {
         explicit generate_sequence(FunF&& fun)
         : fun(std::forward<FunF>(fun)), result(wheels::fun::invoke(this->fun)) {}
 
-        using reference = ValueType<Result>;
+        using reference = ValueType<result_type>;
         using value_type = wheels::meta::Decay<reference>;
 
         bool empty() const {
@@ -53,8 +54,8 @@ namespace seq {
         }
 
     private:
-        wheels::meta::Decay<Fun> fun;
-        Result result;
+        fun_type fun;
+        result_type result;
     };
     static_assert(is_true_sequence<generate_sequence<wheels::optional<int>()>>(), "generate_sequence is a sequence");
 

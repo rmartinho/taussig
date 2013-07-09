@@ -32,15 +32,18 @@ namespace seq {
     namespace detail {
         template <typename Source>
         struct source_sequence : true_sequence {
+        private:
+            using seq_type = wheels::meta::Decay<seq::result_of::as_sequence<Source>>;
+            using source_type = wheels::meta::Decay<Source>;
+
         public:
             template <typename SourceF>
             source_sequence(SourceF&& source)
             : source(std::forward<SourceF>(source))
             , sequence(seq::as_sequence(this->source)) {}
 
-            using sequence_type = wheels::meta::Decay<seq::result_of::as_sequence<Source>>;
-            using reference = ReferenceType<sequence_type>;
-            using value_type = ValueType<sequence_type>;
+            using reference = ReferenceType<seq_type>;
+            using value_type = ValueType<seq_type>;
 
             bool empty() const {
                 return seq::empty(sequence);
@@ -53,8 +56,8 @@ namespace seq {
             }
 
         private:
-            wheels::meta::Decay<Source> source;
-            sequence_type sequence;
+            source_type source;
+            seq_type sequence;
         };
         static_assert(is_true_sequence<source_sequence<fake_sequence<int>>>(), "");
     } // namespace detail
