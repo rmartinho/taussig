@@ -33,14 +33,34 @@ namespace seq {
         template <typename Source>
         struct source_sequence : true_sequence {
         private:
-            using seq_type = wheels::meta::Decay<seq::result_of::as_sequence<Source>>;
             using source_type = wheels::meta::Decay<Source>;
+            using seq_type = wheels::meta::Decay<seq::result_of::as_sequence<source_type>>;
 
         public:
             template <typename SourceF>
             source_sequence(SourceF&& source)
             : source(std::forward<SourceF>(source))
             , sequence(seq::as_sequence(this->source)) {}
+
+            source_sequence(source_sequence const& that)
+            : source(that.source)
+            , sequence(seq::as_sequence(this->source)) {}
+
+            source_sequence(source_sequence&& that)
+            : source(std::move(that.source))
+            , sequence(seq::as_sequence(this->source)) {}
+
+            source_sequence& operator=(source_sequence const& that) {
+                source = that.source;
+                sequence = seq::as_sequence(source);
+                return *this;
+            }
+
+            source_sequence& operator=(source_sequence&& that) {
+                source = std::move(that.source);
+                sequence = seq::as_sequence(source);
+                return *this;
+            }
 
             using reference = ReferenceType<seq_type>;
             using value_type = ValueType<seq_type>;
