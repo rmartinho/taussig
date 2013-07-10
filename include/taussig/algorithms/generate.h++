@@ -40,6 +40,24 @@ namespace seq {
         explicit generate_sequence(FunF&& fun)
         : fun(std::forward<FunF>(fun)), result(wheels::fun::invoke(this->fun)) {}
 
+        generate_sequence(generate_sequence const& that)
+        : fun(that.fun) , result(wheels::fun::invoke(this->fun)) {}
+
+        generate_sequence(generate_sequence&& that)
+        : fun(std::move(that.fun)), result(wheels::fun::invoke(this->fun)) {}
+
+        generate_sequence& operator=(generate_sequence const& that) {
+            fun = that.fun;
+            result = wheels::fun::invoke(this->fun);
+            return *this;
+        }
+
+        generate_sequence& operator=(generate_sequence&& that) {
+            fun = std::move(that.fun);
+            result = wheels::fun::invoke(this->fun);
+            return *this;
+        }
+
         using reference = ValueType<result_type>;
         using value_type = wheels::meta::Decay<reference>;
 
