@@ -33,7 +33,8 @@ namespace seq {
               typename S,
               wheels::meta::EnableIf<is_sequence<S>>...>
     C materialize(S&& s) {
-        return C(seq::begin(s), seq::end(s));
+        // asymmetry in forward because end doesn't use the argument, and only begin owns it
+        return C(seq::begin(std::forward<S>(s)), seq::end(s));
     }
 
     //! {function}
@@ -68,7 +69,7 @@ namespace seq {
               wheels::meta::EnableIf<wheels::meta::is_deduced<C>>...,
               wheels::meta::EnableIf<is_sequence<S>>...>
     detail::materializer<S> materialize(S&& s) {
-        return { s };
+        return { s }; // no forwarding because a reference is stored directly
     }
 } // namespace seq
 
