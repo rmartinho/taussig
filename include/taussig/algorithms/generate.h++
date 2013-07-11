@@ -38,42 +38,32 @@ namespace seq {
         template <typename FunF,
                   wheels::meta::DisableIfRelated<FunF, generate_sequence<Fun>>...>
         explicit generate_sequence(FunF&& fun)
-        : fun(std::forward<FunF>(fun)), result(wheels::fun::invoke(this->fun)) {}
-
-        generate_sequence(generate_sequence const& that)
-        : fun(that.fun) , result(wheels::fun::invoke(this->fun)) {}
-
-        generate_sequence(generate_sequence&& that)
-        : fun(std::move(that.fun)), result(wheels::fun::invoke(this->fun)) {}
-
-        generate_sequence& operator=(generate_sequence const& that) {
-            fun = that.fun;
-            result = wheels::fun::invoke(this->fun);
-            return *this;
-        }
-
-        generate_sequence& operator=(generate_sequence&& that) {
-            fun = std::move(that.fun);
-            result = wheels::fun::invoke(this->fun);
-            return *this;
-        }
+        : fun(std::forward<FunF>(fun)) {}
 
         using reference = ValueType<result_type>;
         using value_type = wheels::meta::Decay<reference>;
 
         bool empty() const {
+            if(start) get_next();
             return !result;
         }
         reference front() const {
+            if(start) get_next();
             return *result;
         }
         void pop_front() {
-            result = wheels::fun::invoke(fun);
+            get_next();
         }
 
     private:
-        fun_type fun;
-        result_type result;
+        mutable bool start = true;
+        mutable result_type result;
+        mutable fun_type fun;
+
+        void get_next() const {
+            result = wheels::fun::invoke(fun);
+            start = false;
+        }
     };
     static_assert(is_true_sequence<generate_sequence<wheels::optional<int>()>>(), "generate_sequence is a sequence");
 
