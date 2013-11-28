@@ -13,7 +13,7 @@
 
 #include <taussig/taussig.h++>
 
-#include <catch.h++>
+#include <catch.hpp>
 
 TEST_CASE("sequence", "sequence tests") {
     auto&& str = seq::as_sequence(u"\U00010000ab");

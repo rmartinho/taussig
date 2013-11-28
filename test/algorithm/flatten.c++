@@ -15,7 +15,7 @@
 #include <taussig/primitives.h++>
 #include <taussig/interop.h++>
 
-#include <catch.h++>
+#include <catch.hpp>
 
 #include <vector>
 

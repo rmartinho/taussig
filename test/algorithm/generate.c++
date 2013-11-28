@@ -17,7 +17,7 @@
 
 #include <wheels/optional.h++>
 
-#include <catch.h++>
+#include <catch.hpp>
 
 #include <vector>
 #include <tuple>
